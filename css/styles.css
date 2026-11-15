@@ -12,6 +12,7 @@
   --accent-blue: #259dc9;
   --accent-blue-ink: #135d7d;
   --accent-blue-soft: #d9f2ff;
+  --frequency-line: rgba(79, 53, 170, .09);
   --line: rgba(58, 72, 120, .14);
   --ok: #166534;
   --ok-bg: #dcfce7;
@@ -32,6 +33,7 @@
   --accent-blue: #8adef5;
   --accent-blue-ink: #b6ecff;
   --accent-blue-soft: rgba(72, 179, 232, .2);
+  --frequency-line: rgba(195, 174, 255, .13);
   --line: rgba(222, 231, 255, .16);
   --ok: #4ade80;
   --ok-bg: rgba(22, 101, 52, .3);
@@ -48,6 +50,7 @@ body {
   color: var(--ink);
   background-color: var(--bg);
   background-image:
+    repeating-radial-gradient(circle at 102% 7%, transparent 0 38px, var(--frequency-line) 39px 40px, transparent 41px 78px),
     radial-gradient(ellipse 980px 560px at 103% -12%, var(--accent-soft), transparent 72%),
     radial-gradient(ellipse 880px 620px at -5% 38%, var(--accent-blue-soft), transparent 72%),
     radial-gradient(ellipse 880px 540px at 95% 104%, var(--accent-soft), transparent 78%);
