@@ -6,9 +6,9 @@
   --muted: #607087;
   --card: #ffffff;
   --surface: #f8fafc;
-  --accent: #0f766e;
-  --accent-ink: #115e59;
-  --accent-soft: #d7f4ed;
+  --accent: #7251c7;
+  --accent-ink: #5b3fa5;
+  --accent-soft: #eee8ff;
   --line: rgba(15, 23, 42, .11);
   --ok: #166534;
   --ok-bg: #dcfce7;
@@ -23,9 +23,9 @@
   --muted: #9aabc0;
   --card: #121e2e;
   --surface: #0f1a29;
-  --accent: #43d5bc;
-  --accent-ink: #99f6e4;
-  --accent-soft: rgba(45, 212, 191, .14);
+  --accent: #b6a2ff;
+  --accent-ink: #d3c7ff;
+  --accent-soft: rgba(167, 139, 250, .16);
   --line: rgba(226, 232, 240, .13);
   --ok: #4ade80;
   --ok-bg: rgba(22, 101, 52, .3);
@@ -169,7 +169,7 @@ h1, h2, h3, p { margin-block-start: 0; }
 }
 
 .button { border-color: var(--accent); background: var(--accent); color: #fff; }
-[data-theme="dark"] .button { color: #062b27; }
+[data-theme="dark"] .button { color: #211935; }
 .button:hover, .button-secondary:hover { transform: translateY(-1px); border-color: var(--accent); }
 .button-secondary:hover { color: var(--accent-ink); background: var(--accent-soft); }
 .button:disabled { opacity: .58; cursor: default; transform: none; }
