@@ -73,7 +73,7 @@
       navLink(base + "/search", "חיפוש", active === "search") +
       "</nav>" + themeButton() + '</div></div></header>' +
       '<main class="page">' + content + '</main>' +
-      '<footer class="footer"><div class="footer-inner"><p>סביבת למידה לקורס עיבוד תמונה ספרתי · מבוסס על מדריך הלמידה, מצגת השיעור הראשון והסיכום שסופקו. חומרי מבחנים ופתרונות יתווספו בהמשך. הסתייגות: האתר נבנה בעזרת בינה מלאכותית (AI), והתוכן עדיין טעון בדיקה ואימות מול חומרי הקורס.</p></div></footer>';
+      '<footer class="footer"><div class="footer-inner"><p>למידה מהנה ובהצלחה! האתר נבנה בעזרת AI, בהשראת <a href="https://all-the-courses.pages.dev/" target="_blank" rel="noopener noreferrer">אתר הקורסים</a> של <a href="https://www.linkedin.com/in/yair-kurtzman-382417247/" target="_blank" rel="noopener noreferrer">יאיר קורצמן</a>. מבוסס על חומרי האוניברסיטה הפתוחה וסטודנטים; יש לבדוק את נכונות התוכן, והשימוש באחריותכם. © זכויות חומרי הלימוד והמבחנים שמורות לאוניברסיטה הפתוחה; האתר מיועד לסטודנטים שלה בלבד.</p></div></footer>';
   }
 
   function unitCard(unit, progress) {
