@@ -307,6 +307,12 @@ h1, h2, h3, p { margin-block-start: 0; }
   background: var(--accent-soft);
 }
 .callout strong { color: var(--accent-ink); }
+.lesson-table-wrap { overflow-x: auto; margin-block: 14px; }
+.lesson-table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+.lesson-table caption { margin-block-end: 6px; color: var(--muted); font-size: .9rem; text-align: start; }
+.lesson-table th, .lesson-table td { padding: 8px 12px; border: 1px solid var(--line); text-align: center; }
+.lesson-table thead th { background: var(--surface); }
+.lesson-table tbody th { background: var(--accent-soft); color: var(--accent-ink); text-align: start; white-space: nowrap; }
 .lesson-nav { position: sticky; inset-block-start: 100px; padding: 18px; }
 .lesson-nav h2 { font-size: 1rem; }
 .lesson-nav a { display: block; padding: 5px 0; color: var(--muted); font-size: .9rem; text-decoration: none; }

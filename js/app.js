@@ -116,6 +116,15 @@
       '<div class="unit-grid">' + course.units.map(function (unit) { return unitCard(unit, progress); }).join("") + "</div>", "learn");
   }
 
+  function lessonTable(table) {
+    return '<div class="lesson-table-wrap"><table class="lesson-table">' +
+      (table.caption ? "<caption>" + escapeHtml(table.caption) + "</caption>" : "") +
+      "<thead><tr>" + table.headers.map(function (header) { return '<th scope="col">' + escapeHtml(header) + "</th>"; }).join("") + "</tr></thead>" +
+      "<tbody>" + table.rows.map(function (row) {
+        return "<tr>" + row.map(function (cell, i) { return i === 0 ? '<th scope="row">' + escapeHtml(cell) + "</th>" : "<td>" + escapeHtml(cell) + "</td>"; }).join("") + "</tr>";
+      }).join("") + "</tbody></table></div>";
+  }
+
   function renderUnit(unit) {
     const progress = getProgress();
     const index = course.units.indexOf(unit);
@@ -123,6 +132,7 @@
     const sections = unit.sections.map(function (section, sectionIndex) {
       return '<section class="lesson-card" id="section-' + sectionIndex + '"><h2>' + escapeHtml(section.title) + "</h2>" +
         section.paragraphs.map(function (paragraph) { return "<p>" + escapeHtml(paragraph) + "</p>"; }).join("") +
+        (section.tables || []).map(lessonTable).join("") +
         (section.formula ? '<div class="formula">' + escapeHtml(section.formula) + "</div>" : "") +
         (section.key ? '<div class="callout"><strong>נקודה לזכור:</strong> ' + escapeHtml(section.key) + "</div>" : "") +
         "</section>";
