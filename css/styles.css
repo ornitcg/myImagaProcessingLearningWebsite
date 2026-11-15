@@ -56,7 +56,7 @@ body {
     radial-gradient(ellipse 880px 540px at 95% 104%, var(--accent-soft), transparent 78%);
   background-repeat: no-repeat;
   background-attachment: fixed;
-  font: 16px/1.7 "Segoe UI", Arial, sans-serif;
+  font: 16px/1.7 Tahoma, Arial, sans-serif;
   text-align: right;
   overflow-wrap: anywhere;
 }
@@ -167,7 +167,12 @@ button { color: inherit; }
 .hero-content { position: relative; z-index: 1; max-width: 760px; }
 .eyebrow, .kicker { margin: 0; color: var(--accent-ink); font-size: .88rem; font-weight: 800; }
 h1, h2, h3, p { margin-block-start: 0; }
-.hero h1 { margin-block: 8px 12px; font-size: clamp(2rem, 5vw, 3.3rem); line-height: 1.2; }
+.hero h1,
+.page-head h1 {
+  font-family: Tahoma, Arial, sans-serif;
+  font-weight: 800;
+}
+.hero h1 { margin-block: 8px 12px; font-size: clamp(2.35rem, 6vw, 3.8rem); line-height: 1.15; }
 .hero-lead { max-width: 680px; color: var(--muted); font-size: 1.08rem; }
 .hero-actions, .actions, .tag-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 
