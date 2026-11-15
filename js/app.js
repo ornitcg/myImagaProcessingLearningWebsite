@@ -73,7 +73,7 @@
       navLink(base + "/search", "חיפוש", active === "search") +
       "</nav>" + themeButton() + '</div></div></header>' +
       '<main class="page">' + content + '</main>' +
-      '<footer class="footer"><div class="footer-inner"><p>סביבת למידה לקורס עיבוד תמונה ספרתי · מבוסס על מדריך הלמידה, מצגת השיעור הראשון והסיכום שסופקו. חומרי מבחנים ופתרונות יתווספו בהמשך.</p></div></footer>';
+      '<footer class="footer"><div class="footer-inner"><p>סביבת למידה לקורס עיבוד תמונה ספרתי · מבוסס על מדריך הלמידה, מצגת השיעור הראשון והסיכום שסופקו. חומרי מבחנים ופתרונות יתווספו בהמשך. הסתייגות: האתר נבנה בעזרת בינה מלאכותית (AI), והתוכן עדיין טעון בדיקה ואימות מול חומרי הקורס.</p></div></footer>';
   }
 
   function unitCard(unit, progress) {
