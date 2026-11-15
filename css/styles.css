@@ -1,36 +1,42 @@
 :root,
 [data-theme="light"] {
   color-scheme: light;
-  --bg: #f4f7fb;
-  --ink: #102033;
-  --muted: #607087;
+  --bg: #f5f7ff;
+  --ink: #1a2340;
+  --muted: #64728f;
   --card: #ffffff;
-  --surface: #f8fafc;
-  --accent: #7251c7;
-  --accent-ink: #5b3fa5;
-  --accent-soft: #eee8ff;
-  --line: rgba(15, 23, 42, .11);
+  --surface: #f0f5ff;
+  --accent: #7158cf;
+  --accent-ink: #5641aa;
+  --accent-soft: #eee9ff;
+  --accent-blue: #45a9d8;
+  --accent-blue-ink: #216b91;
+  --accent-blue-soft: #e5f5ff;
+  --line: rgba(58, 72, 120, .12);
   --ok: #166534;
   --ok-bg: #dcfce7;
-  --shadow: 0 16px 42px rgba(15, 23, 42, .07);
-  --glass: rgba(255, 255, 255, .86);
+  --shadow: 0 16px 42px rgba(74, 76, 151, .09);
+  --glass: rgba(255, 255, 255, .88);
 }
 
 [data-theme="dark"] {
   color-scheme: dark;
-  --bg: #0c1421;
-  --ink: #e4edf7;
-  --muted: #9aabc0;
-  --card: #121e2e;
-  --surface: #0f1a29;
-  --accent: #b6a2ff;
-  --accent-ink: #d3c7ff;
-  --accent-soft: rgba(167, 139, 250, .16);
-  --line: rgba(226, 232, 240, .13);
+  --bg: #0e1426;
+  --ink: #e9edff;
+  --muted: #a3afca;
+  --card: #171f36;
+  --surface: #131c32;
+  --accent: #b7a5ff;
+  --accent-ink: #ded5ff;
+  --accent-soft: rgba(183, 165, 255, .15);
+  --accent-blue: #80d0f0;
+  --accent-blue-ink: #b4eaff;
+  --accent-blue-soft: rgba(82, 177, 223, .15);
+  --line: rgba(222, 231, 255, .14);
   --ok: #4ade80;
   --ok-bg: rgba(22, 101, 52, .3);
   --shadow: 0 16px 42px rgba(0, 0, 0, .22);
-  --glass: rgba(12, 20, 33, .88);
+  --glass: rgba(14, 20, 38, .9);
 }
 
 * { box-sizing: border-box; }
@@ -43,9 +49,10 @@ body {
   background-color: var(--bg);
   background-image:
     radial-gradient(800px 400px at 100% -10%, var(--accent-soft), transparent 60%),
-    linear-gradient(rgba(100, 116, 139, .035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(100, 116, 139, .035) 1px, transparent 1px);
-  background-size: auto, 48px 48px, 48px 48px;
+    radial-gradient(700px 440px at 0% 42%, var(--accent-blue-soft), transparent 66%),
+    linear-gradient(rgba(100, 116, 170, .035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 116, 170, .035) 1px, transparent 1px);
+  background-size: auto, auto, 48px 48px, 48px 48px;
   font: 16px/1.7 "Heebo", "Segoe UI", Arial, sans-serif;
   text-align: right;
   overflow-wrap: anywhere;
@@ -130,7 +137,7 @@ button { color: inherit; }
   padding: clamp(24px, 5vw, 52px);
   border: 1px solid var(--line);
   border-radius: 24px;
-  background: linear-gradient(135deg, var(--card), var(--surface));
+  background: linear-gradient(125deg, var(--card) 12%, var(--surface) 68%, var(--accent-blue-soft));
   box-shadow: var(--shadow);
 }
 
@@ -233,6 +240,10 @@ h1, h2, h3, p { margin-block-start: 0; }
   background: var(--accent-soft);
   color: var(--accent-ink);
   font-weight: 850;
+}
+.unit-card:nth-child(even) .unit-number {
+  background: var(--accent-blue-soft);
+  color: var(--accent-blue-ink);
 }
 .unit-copy { min-width: 0; }
 .unit-copy strong { display: block; margin-block-end: 4px; line-height: 1.4; }
