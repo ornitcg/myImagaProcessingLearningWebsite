@@ -5,6 +5,29 @@
   const course = window.COURSE;
   const base = "#/course/" + course.id;
   const progressKey = "dip-study-progress";
+  const topicsById = {};
+  course.topics.forEach(function (topic) { topicsById[topic.id] = topic; });
+  course.units.forEach(function (unit) {
+    unit.topicList = unit.topics.map(function (id) { return topicsById[id]; });
+  });
+  const orderedTopics = course.units.reduce(function (list, unit, unitIndex) {
+    unit.topicList.forEach(function (topic, topicIndex) {
+      list.push({ unit: unit, unitIndex: unitIndex, topic: topic, topicIndex: topicIndex });
+    });
+    return list;
+  }, []);
+
+  function topicHref(entry) {
+    return base + "/learn/" + encodeURIComponent(entry.unit.id) + "/" + encodeURIComponent(entry.topic.id);
+  }
+
+  function findEntry(topicId) {
+    return orderedTopics.find(function (entry) { return entry.topic.id === topicId; });
+  }
+
+  function unitLabel(unitIndex) {
+    return "יחידה " + (unitIndex + 1);
+  }
 
   function escapeHtml(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, function (char) {
@@ -53,6 +76,7 @@
       courseId: parts[1] || course.id,
       area: parts[2] || "home",
       unitId: parts[3] || "",
+      topicId: parts[4] || "",
       query: params.get("q") || ""
     };
   }
@@ -76,30 +100,45 @@
       '<footer class="footer"><div class="footer-inner"><p>למידה מהנה ובהצלחה! האתר נבנה בעזרת AI, בהשראת <a href="https://all-the-courses.pages.dev/" target="_blank" rel="noopener noreferrer">אתר הקורסים</a> של <a href="https://www.linkedin.com/in/yair-kurtzman-382417247/" target="_blank" rel="noopener noreferrer">יאיר קורצמן</a>. מבוסס על חומרי האוניברסיטה הפתוחה וסטודנטים; יש לבדוק את נכונות התוכן, והשימוש באחריותכם. © זכויות חומרי הלימוד והמבחנים שמורות לאוניברסיטה הפתוחה; האתר מיועד לסטודנטים שלה בלבד.</p></div></footer>';
   }
 
+  function doneCount(unit, progress) {
+    return unit.topics.filter(function (id) { return progress.done.indexOf(id) >= 0; }).length;
+  }
+
   function unitCard(unit, progress) {
-    const done = progress.done.indexOf(unit.id) >= 0;
+    const index = course.units.indexOf(unit);
+    const done = doneCount(unit, progress);
+    const complete = done === unit.topics.length;
     return '<a class="unit-card" href="' + base + "/learn/" + encodeURIComponent(unit.id) + '">' +
-      '<span class="unit-number">' + (course.units.indexOf(unit) + 1) + '</span>' +
-      '<span class="unit-copy"><strong>' + escapeHtml(unit.title) + '</strong><p>' + escapeHtml(unit.description) + '</p>' +
-      '<span class="unit-meta"><span class="pill">' + escapeHtml(unit.short) + '</span>' +
+      '<span class="unit-number">' + (index + 1) + '</span>' +
+      '<span class="unit-copy"><strong>' + unitLabel(index) + ". " + escapeHtml(unit.title) + '</strong><p>' + escapeHtml(unit.description) + '</p>' +
+      '<span class="unit-meta"><span class="pill">זמן לימוד משוער: ' + unit.hours + ' שעות</span>' +
+      '<span class="pill' + (complete ? " done" : "") + '">' + done + "/" + unit.topics.length + " נושאים" + (complete ? " · הושלם" : "") + "</span></span></span></a>";
+  }
+
+  function topicCard(entry, progress) {
+    const done = progress.done.indexOf(entry.topic.id) >= 0;
+    return '<a class="unit-card" href="' + topicHref(entry) + '">' +
+      '<span class="unit-number">' + (entry.unitIndex + 1) + "." + (entry.topicIndex + 1) + '</span>' +
+      '<span class="unit-copy"><strong>' + escapeHtml(entry.topic.title) + '</strong><p>' + escapeHtml(entry.topic.description) + '</p>' +
+      '<span class="unit-meta"><span class="pill">' + escapeHtml(entry.topic.short) + '</span>' +
       (done ? '<span class="pill done">הושלם</span>' : "") + "</span></span></a>";
   }
 
   function renderHome() {
     const progress = getProgress();
-    const count = progress.done.length;
-    const percent = Math.round(count / course.units.length * 100);
+    const count = orderedTopics.filter(function (entry) { return progress.done.indexOf(entry.topic.id) >= 0; }).length;
+    const percent = Math.round(count / orderedTopics.length * 100);
     return shell(
       '<section class="hero"><div class="hero-content"><p class="eyebrow">' + escapeHtml(course.code) + " · " + course.tags.map(escapeHtml).join(" · ") + '</p>' +
       "<h1>" + escapeHtml(course.name) + '</h1><p class="hero-lead">' + escapeHtml(course.blurb) + '</p>' +
       '<div class="hero-actions"><a class="button" href="' + base + '/learn">מתחילים ללמוד <span aria-hidden="true">←</span></a>' +
       '<a class="button-secondary" href="' + base + '/practice">בדיקת הבנה</a></div>' +
       '<div class="stat-grid"><div class="stat"><strong>' + course.units.length + '</strong><span>יחידות לימוד</span></div>' +
-      '<div class="stat"><strong>' + count + '</strong><span>יחידות שהושלמו</span></div>' +
+      '<div class="stat"><strong>' + count + "/" + orderedTopics.length + '</strong><span>נושאים שהושלמו</span></div>' +
       '<div class="stat"><strong>' + percent + '%</strong><span>התקדמות בקורס</span><div class="progress-track" role="progressbar" aria-valuenow="' + percent + '" aria-valuemin="0" aria-valuemax="100"><span style="width:' + percent + '%"></span></div></div></div>' +
       '</div></section>' +
       '<div class="section-heading"><div><h2>מפת הקורס</h2><p>יחידות הלימוד לפי מדריך הקורס, המצגת והסיכום</p></div><a href="' + base + '/learn">לכל היחידות ←</a></div>' +
-      '<div class="unit-grid">' + course.units.map(function (unit) { return unitCard(unit, progress); }).join("") + "</div>" +
+      '<div class="unit-grid unit-list">' + course.units.map(function (unit) { return unitCard(unit, progress); }).join("") + "</div>" +
       '<div class="section-heading"><div><h2>כלי הלמידה</h2><p>סיכום, תרגול ומבחנים</p></div></div>' +
       '<div class="portal-grid">' +
       '<a class="portal" href="' + base + '/summary"><span class="portal-icon" aria-hidden="true">📘</span><strong>סיכום נוסחאות</strong><span>תזכורת מהירה למושגים ולנוסחאות מרכזיות</span></a>' +
@@ -112,8 +151,8 @@
   function renderUnits() {
     const progress = getProgress();
     return shell('<a class="back-link" href="' + base + '">← חזרה לקורס</a>' +
-      '<header class="page-head"><p class="eyebrow">תוכנית הלימוד</p><h1>יחידות הקורס</h1><p>כל יחידה כוללת מושגי יסוד, הסברים ונקודות מפתח. אפשר ללמוד לפי הסדר ולסמן יחידות שהושלמו.</p></header>' +
-      '<div class="unit-grid">' + course.units.map(function (unit) { return unitCard(unit, progress); }).join("") + "</div>", "learn");
+      '<header class="page-head"><p class="eyebrow">תוכנית הלימוד</p><h1>יחידות הקורס</h1><p>הקורס מחולק ל־' + course.units.length + ' יחידות, וכל יחידה כוללת כמה נושאים. בכל נושא יש מושגי יסוד, הסברים ונקודות מפתח, ואפשר לסמן נושאים שהושלמו.</p></header>' +
+      '<div class="unit-grid unit-list">' + course.units.map(function (unit) { return unitCard(unit, progress); }).join("") + "</div>", "learn");
   }
 
   function lessonTable(table) {
@@ -128,6 +167,21 @@
   function renderUnit(unit) {
     const progress = getProgress();
     const index = course.units.indexOf(unit);
+    const entries = orderedTopics.filter(function (entry) { return entry.unit === unit; });
+    const done = doneCount(unit, progress);
+    const previous = index > 0 ? '<a class="button-secondary" href="' + base + "/learn/" + course.units[index - 1].id + '">→ ' + unitLabel(index - 1) + ". " + escapeHtml(course.units[index - 1].title) + "</a>" : "";
+    const next = index < course.units.length - 1 ? '<a class="button" href="' + base + "/learn/" + course.units[index + 1].id + '">' + unitLabel(index + 1) + ". " + escapeHtml(course.units[index + 1].title) + " ←</a>" : "";
+    return shell('<a class="back-link" href="' + base + '/learn">← לכל היחידות</a>' +
+      '<header class="page-head"><p class="eyebrow">' + unitLabel(index) + " מתוך " + course.units.length + " · זמן לימוד משוער: " + unit.hours + ' שעות</p><h1>' + escapeHtml(unit.title) + '</h1><p>' + escapeHtml(unit.description) + "</p></header>" +
+      '<div class="section-heading"><div><h2>נושאי היחידה</h2><p>' + done + " מתוך " + entries.length + ' נושאים הושלמו</p></div></div>' +
+      '<div class="unit-grid">' + entries.map(function (entry) { return topicCard(entry, progress); }).join("") + "</div>" +
+      '<div class="actions lesson-pager">' + previous + next + "</div>", "learn");
+  }
+
+  function renderTopic(entry) {
+    const progress = getProgress();
+    const unit = entry.topic;
+    const index = orderedTopics.indexOf(entry);
     const completed = progress.done.indexOf(unit.id) >= 0;
     const sections = unit.sections.map(function (section, sectionIndex) {
       return '<section class="lesson-card" id="section-' + sectionIndex + '"><h2>' + escapeHtml(section.title) + "</h2>" +
@@ -137,22 +191,28 @@
         (section.key ? '<div class="callout"><strong>נקודה לזכור:</strong> ' + escapeHtml(section.key) + "</div>" : "") +
         "</section>";
     }).join("");
-    const previous = index > 0 ? '<a class="button-secondary" href="' + base + "/learn/" + course.units[index - 1].id + '">→ ' + escapeHtml(course.units[index - 1].title) + "</a>" : "";
-    const next = index < course.units.length - 1 ? '<a class="button" href="' + base + "/learn/" + course.units[index + 1].id + '">' + escapeHtml(course.units[index + 1].title) + " ←</a>" : "";
+    const previous = index > 0 ? '<a class="button-secondary" href="' + topicHref(orderedTopics[index - 1]) + '">→ ' + escapeHtml(orderedTopics[index - 1].topic.title) + "</a>" : "";
+    const next = index < orderedTopics.length - 1 ? '<a class="button" href="' + topicHref(orderedTopics[index + 1]) + '">' + escapeHtml(orderedTopics[index + 1].topic.title) + " ←</a>" : "";
+    const unitHref = base + "/learn/" + encodeURIComponent(entry.unit.id);
     const demo = unit.id === "halftone" ? '<section class="demo" aria-labelledby="demo-title"><h3 id="demo-title">מעבדת סף: נסו בעצמכם</h3><p>הזיזו את הסף וראו איך אותו מעבר אפור הופך לתמונה בינרית.</p><div class="demo-canvases"><figure><figcaption>תמונה בגווני אפור</figcaption><canvas width="280" height="96" data-gray-canvas aria-label="מעבר הדרגתי של גווני אפור"></canvas></figure><figure><figcaption>אחרי סף</figcaption><canvas width="280" height="96" data-binary-canvas aria-label="המעבר אחרי בינריזציה"></canvas></figure></div><label class="range-row" for="threshold-range"><span>סף</span><input id="threshold-range" type="range" min="0" max="255" value="128"><output data-threshold-value for="threshold-range">128</output></label></section>' : "";
 
-    return shell('<a class="back-link" href="' + base + '/learn">← לכל היחידות</a>' +
-      '<header class="page-head"><p class="eyebrow">יחידה ' + (index + 1) + " מתוך " + course.units.length + '</p><h1>' + escapeHtml(unit.title) + '</h1><p>' + escapeHtml(unit.description) + "</p></header>" +
+    return shell('<a class="back-link" href="' + unitHref + '">← ' + unitLabel(entry.unitIndex) + ". " + escapeHtml(entry.unit.title) + '</a>' +
+      '<header class="page-head"><p class="eyebrow">' + unitLabel(entry.unitIndex) + " · נושא " + (entry.topicIndex + 1) + " מתוך " + entry.unit.topics.length + '</p><h1>' + escapeHtml(unit.title) + '</h1><p>' + escapeHtml(unit.description) + "</p></header>" +
       '<div class="course-layout"><div class="lesson-content">' + sections + demo +
-      '<div class="actions"><button type="button" class="' + (completed ? "button-secondary" : "button") + '" data-complete-unit="' + escapeHtml(unit.id) + '" aria-pressed="' + completed + '">' + (completed ? "ביטול סימון השלמה" : "סיימתי ללמוד את היחידה") + "</button>" +
+      '<div class="actions"><button type="button" class="' + (completed ? "button-secondary" : "button") + '" data-complete-unit="' + escapeHtml(unit.id) + '" aria-pressed="' + completed + '">' + (completed ? "ביטול סימון השלמה" : "סיימתי ללמוד את הנושא") + "</button>" +
       '<a class="button-secondary" href="' + base + '/practice">לתרגול ←</a></div><div class="actions lesson-pager">' + previous + next + "</div></div>" +
-      '<aside class="panel lesson-nav"><h2>ביחידה הזו</h2>' + unit.sections.map(function (section, i) { return '<a href="#section-' + i + '">' + escapeHtml(section.title) + "</a>"; }).join("") +
+      '<aside class="panel lesson-nav"><h2>בנושא הזה</h2>' + unit.sections.map(function (section, i) { return '<a href="#section-' + i + '">' + escapeHtml(section.title) + "</a>"; }).join("") +
+      '<hr><h2>נושאים ב' + unitLabel(entry.unitIndex) + "</h2>" + orderedTopics.filter(function (item) { return item.unit === entry.unit; }).map(function (item) {
+        return '<a href="' + topicHref(item) + '"' + (item === entry ? ' class="active" aria-current="page"' : "") + ">" + (item.unitIndex + 1) + "." + (item.topicIndex + 1) + " " + escapeHtml(item.topic.title) + "</a>";
+      }).join("") +
       '<hr><a href="' + base + '/summary">מעבר לסיכום הקורס ←</a></aside></div>', "learn");
   }
 
   function renderSummary() {
-    const rows = course.units.map(function (unit, index) {
-      return '<section class="lesson-card"><p class="kicker">יחידה ' + (index + 1) + '</p><h2>' + escapeHtml(unit.title) + "</h2>" +
+    const rows = orderedTopics.map(function (entry) {
+      const unit = entry.topic;
+      return (entry.topicIndex === 0 ? '<div class="section-heading"><div><h2>' + unitLabel(entry.unitIndex) + ". " + escapeHtml(entry.unit.title) + "</h2></div></div>" : "") +
+        '<section class="lesson-card"><p class="kicker">' + unitLabel(entry.unitIndex) + " · נושא " + (entry.topicIndex + 1) + '</p><h2><a href="' + topicHref(entry) + '">' + escapeHtml(unit.title) + "</a></h2>" +
         unit.sections.map(function (section) {
           return "<p><strong>" + escapeHtml(section.title) + ".</strong> " + escapeHtml(section.key || section.paragraphs[0]) + "</p>" +
             (section.formula ? '<div class="formula">' + escapeHtml(section.formula) + "</div>" : "");
@@ -163,12 +223,12 @@
   }
 
   function allQuestions() {
-    return course.units.reduce(function (questions, unit, unitIndex) {
-      unit.quiz.forEach(function (item, index) {
+    return orderedTopics.reduce(function (questions, entry) {
+      entry.topic.quiz.forEach(function (item, index) {
         questions.push({
-          id: unit.id + "-" + index,
-          unit: unit,
-          unitIndex: unitIndex,
+          id: entry.topic.id + "-" + index,
+          unit: entry.topic,
+          unitIndex: entry.unitIndex,
           question: item.question,
           options: item.options,
           answer: item.answer,
@@ -203,12 +263,13 @@
     const normalized = query.trim().toLocaleLowerCase("he");
     if (normalized.length < 2) return '<p class="empty-state">הקלידו לפחות שתי אותיות כדי לחפש ביחידות ובסיכום.</p>';
     const results = [];
-    course.units.forEach(function (unit, unitIndex) {
+    orderedTopics.forEach(function (entry) {
+      const unit = entry.topic;
       const text = [unit.title, unit.description, unit.short].concat(unit.sections.map(function (section) {
         return section.title + " " + section.paragraphs.join(" ") + " " + (section.key || "");
       })).join(" ");
       if (text.toLocaleLowerCase("he").includes(normalized)) {
-        results.push('<a class="search-result" href="' + base + "/learn/" + unit.id + '"><strong>יחידה ' + (unitIndex + 1) + " · " + escapeHtml(unit.title) + '</strong><span>' + escapeHtml(unit.description) + "</span></a>");
+        results.push('<a class="search-result" href="' + topicHref(entry) + '"><strong>' + unitLabel(entry.unitIndex) + " · " + escapeHtml(unit.title) + '</strong><span>' + escapeHtml(unit.description) + "</span></a>");
       }
     });
     return results.length ? results.join("") : '<p class="empty-state">לא נמצאו תוצאות עבור „' + escapeHtml(query) + "”.</p>";
@@ -227,7 +288,14 @@
       location.hash = base;
       return;
     }
-    if (info.area === "learn" && info.unitId) {
+    const legacyEntry = info.area === "learn" && info.unitId && !info.topicId ? findEntry(info.unitId) : null;
+    if (legacyEntry) {
+      location.replace(topicHref(legacyEntry));
+      return;
+    }
+    const topicEntry = info.area === "learn" && info.topicId ? findEntry(info.topicId) : null;
+    if (topicEntry && topicEntry.unit.id === info.unitId) app.innerHTML = renderTopic(topicEntry);
+    else if (info.area === "learn" && info.unitId) {
       const unit = course.units.find(function (item) { return item.id === info.unitId; });
       app.innerHTML = unit ? renderUnit(unit) : renderUnits();
     } else if (info.area === "learn") app.innerHTML = renderUnits();
@@ -237,7 +305,7 @@
     else if (info.area === "search") app.innerHTML = renderSearch(info.query);
     else app.innerHTML = renderHome();
     bindEvents();
-    if (info.area === "learn" && info.unitId === "halftone") initThresholdDemo();
+    if (topicEntry && topicEntry.topic.id === "halftone") initThresholdDemo();
   }
 
   function bindEvents() {
