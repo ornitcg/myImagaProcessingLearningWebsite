@@ -309,6 +309,19 @@ h1, h2, h3, p { margin-block-start: 0; }
   background: var(--accent-soft);
 }
 .callout strong { color: var(--accent-ink); }
+.lesson-figure { margin: 16px 0; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.lesson-figure svg { display: block; width: 100%; max-width: 640px; height: auto; margin-inline: auto; font-family: inherit; direction: ltr; }
+.lesson-figure figcaption { margin-block-start: 8px; color: var(--muted); font-size: .88rem; text-align: center; }
+.fig-wire { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.fig-fill, .fig-dot { fill: var(--ink); }
+.fig-label { fill: var(--ink); }
+.fig-muted { fill: var(--muted); }
+.fig-accent { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 5; }
+.fig-accent-line { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+.fig-accent-fill { fill: var(--accent); }
+.fig-accent-text { fill: var(--accent-ink); }
+.fig-box { fill: var(--card); stroke: var(--line); stroke-width: 1.5; }
+.fig-box-accent { fill: var(--accent-soft); stroke: var(--accent); }
 .lesson-table-wrap { overflow-x: auto; margin-block: 14px; }
 .lesson-table { width: 100%; border-collapse: collapse; font-size: .95rem; }
 .lesson-table caption { margin-block-end: 6px; color: var(--muted); font-size: .9rem; text-align: start; }

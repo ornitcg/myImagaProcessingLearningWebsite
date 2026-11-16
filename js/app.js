@@ -155,6 +155,13 @@
       '<div class="unit-grid unit-list">' + course.units.map(function (unit) { return unitCard(unit, progress); }).join("") + "</div>", "learn");
   }
 
+  function lessonFigure(figure) {
+    const svg = figure && window.FIGURES ? window.FIGURES[figure.id] : "";
+    if (!svg) return "";
+    return '<figure class="lesson-figure">' + svg +
+      (figure.caption ? "<figcaption>" + escapeHtml(figure.caption) + "</figcaption>" : "") + "</figure>";
+  }
+
   function lessonTable(table) {
     return '<div class="lesson-table-wrap"><table class="lesson-table">' +
       (table.caption ? "<caption>" + escapeHtml(table.caption) + "</caption>" : "") +
@@ -186,6 +193,7 @@
     const sections = unit.sections.map(function (section, sectionIndex) {
       return '<section class="lesson-card" id="section-' + sectionIndex + '"><h2>' + escapeHtml(section.title) + "</h2>" +
         section.paragraphs.map(function (paragraph) { return "<p>" + escapeHtml(paragraph) + "</p>"; }).join("") +
+        lessonFigure(section.figure) +
         (section.tables || []).map(lessonTable).join("") +
         (section.formula ? '<div class="formula">' + escapeHtml(section.formula) + "</div>" : "") +
         (section.key ? '<div class="callout"><strong>נקודה לזכור:</strong> ' + escapeHtml(section.key) + "</div>" : "") +
