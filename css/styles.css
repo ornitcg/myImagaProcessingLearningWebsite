@@ -309,6 +309,7 @@ h1, h2, h3, p { margin-block-start: 0; }
   background: var(--accent-soft);
 }
 .callout strong { color: var(--accent-ink); }
+.source-ref { margin: 10px 0 0; color: var(--muted); font-size: .85rem; }
 .lesson-figure { margin: 16px 0; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
 .lesson-figure svg { display: block; width: 100%; max-width: 640px; height: auto; margin-inline: auto; font-family: inherit; direction: ltr; }
 .lesson-figure figcaption { margin-block-start: 8px; color: var(--muted); font-size: .88rem; text-align: center; }
@@ -328,6 +329,10 @@ h1, h2, h3, p { margin-block-start: 0; }
 .lesson-table th, .lesson-table td { padding: 8px 12px; border: 1px solid var(--line); text-align: center; }
 .lesson-table thead th { background: var(--surface); }
 .lesson-table tbody th { background: var(--accent-soft); color: var(--accent-ink); text-align: start; white-space: nowrap; }
+.lesson-table.matrix { width: auto; margin-inline: auto; font-family: "Cascadia Code", Consolas, monospace; }
+.lesson-table.matrix th, .lesson-table.matrix td { min-width: 2.6em; padding: 6px 10px; }
+.lesson-table .split { border-left: 3px solid var(--accent); }
+.matrix-caption { margin-block-end: 6px; color: var(--muted); font-size: .9rem; text-align: center; }
 .lesson-nav { position: sticky; inset-block-start: 100px; padding: 18px; }
 .lesson-nav h2 { font-size: 1rem; }
 .lesson-nav a { display: block; padding: 5px 0; color: var(--muted); font-size: .9rem; text-decoration: none; }

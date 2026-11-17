@@ -163,11 +163,16 @@
   }
 
   function lessonTable(table) {
-    return '<div class="lesson-table-wrap"><table class="lesson-table">' +
-      (table.caption ? "<caption>" + escapeHtml(table.caption) + "</caption>" : "") +
-      "<thead><tr>" + table.headers.map(function (header) { return '<th scope="col">' + escapeHtml(header) + "</th>"; }).join("") + "</tr></thead>" +
+    // table.ltr: matrices read left to right; table.split: column index that starts the right half of [A | I]
+    const splitAttr = function (i) { return table.split === i ? ' class="split"' : ""; };
+    // a matrix table is only as wide as its numbers, so its caption goes above it as a full-width line
+    const caption = table.caption ? escapeHtml(table.caption) : "";
+    return '<div class="lesson-table-wrap">' + (table.ltr && caption ? '<div class="matrix-caption">' + caption + "</div>" : "") +
+      '<table class="lesson-table' + (table.ltr ? " matrix" : "") + '"' + (table.ltr ? ' dir="ltr"' : "") + ">" +
+      (!table.ltr && caption ? "<caption>" + caption + "</caption>" : "") +
+      (table.headers.some(Boolean) ? "<thead><tr>" + table.headers.map(function (header, i) { return '<th scope="col"' + splitAttr(i) + ">" + escapeHtml(header) + "</th>"; }).join("") + "</tr></thead>" : "") +
       "<tbody>" + table.rows.map(function (row) {
-        return "<tr>" + row.map(function (cell, i) { return i === 0 ? '<th scope="row">' + escapeHtml(cell) + "</th>" : "<td>" + escapeHtml(cell) + "</td>"; }).join("") + "</tr>";
+        return "<tr>" + row.map(function (cell, i) { return i === 0 ? '<th scope="row">' + escapeHtml(cell) + "</th>" : "<td" + splitAttr(i) + ">" + escapeHtml(cell) + "</td>"; }).join("") + "</tr>";
       }).join("") + "</tbody></table></div>";
   }
 
@@ -197,6 +202,7 @@
         (section.tables || []).map(lessonTable).join("") +
         (section.formula ? '<div class="formula">' + escapeHtml(section.formula) + "</div>" : "") +
         (section.key ? '<div class="callout"><strong>נקודה לזכור:</strong> ' + escapeHtml(section.key) + "</div>" : "") +
+        (section.source ? '<p class="source-ref">📖 ' + escapeHtml(section.source) + "</p>" : "") +
         "</section>";
     }).join("");
     const previous = index > 0 ? '<a class="button-secondary" href="' + topicHref(orderedTopics[index - 1]) + '">→ ' + escapeHtml(orderedTopics[index - 1].topic.title) + "</a>" : "";
